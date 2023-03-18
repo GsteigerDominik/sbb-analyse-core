@@ -1,9 +1,14 @@
 from flask import Flask
 
-app = Flask(__name__)
+def create_app(test_config=None):
+    # create and configure the app
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+    )
 
-@app.route("/")
-def hello_world():
-    return "<p>SBB Analyse!</p>"
+    # a simple page that says hello
+    @app.route('/')
+    def hello():
+        return 'Hello, World!'
 
-print("hello world!")
+    return app
