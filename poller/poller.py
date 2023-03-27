@@ -4,10 +4,9 @@ from datetime import datetime, timedelta
 
 import requests
 
-from flaskr import app
 from flaskr.db import dbAccess
 
-@app.cli.command()
+
 def runPollJob():
     print("Poll Job starting...")
     yesterday = datetime.now() - timedelta(days=1)
