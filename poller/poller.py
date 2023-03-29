@@ -19,9 +19,15 @@ def runPollJob():
     formatted_json_data = json.dumps(response_dict, ensure_ascii=False)
     dbAccess.saveUnprocessedData(formatted_date, formatted_json_data)
     timesToPoll = int(response_dict['total_count'] / 100) + 1
+    nextUrl=findNextUrl(response_dict,' ')
     for x in range(0, timesToPoll):
-        logger.logInfo('PollJob: Processed ' + str(x) + ' of ' + str(timesToPoll))
-        response_dict=processOneRequest(response_dict['links'][3]['href'],formatted_date)
+        if nextUrl is not None:
+            #TOOD Still not working right
+            response_dict=processOneRequest(nextUrl,formatted_date)
+            nextUrl=findNextUrl(response_dict,nextUrl)
+            logger.logInfo('PollJob: Processed ' + str(x+1) + ' of ' + str(timesToPoll))
+        else:
+            break
     logger.logInfo("PollJob: Status changed to finished")
 
 def processOneRequest(url,formatted_date):
@@ -30,3 +36,11 @@ def processOneRequest(url,formatted_date):
     formatted_json_data = json.dumps(response_dict, ensure_ascii=False)
     dbAccess.saveUnprocessedData(formatted_date, formatted_json_data)
     return response_dict
+
+def findNextUrl(response_dict,nextUrl):
+    print(nextUrl)
+    if 'error_code' in response_dict:
+        return
+    for item in response_dict['links']:
+        if item['rel'] == 'next':
+            return item['href']
