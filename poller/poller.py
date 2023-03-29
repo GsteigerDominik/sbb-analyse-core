@@ -21,7 +21,7 @@ def runPollJob():
     timesToPoll = int(response_dict['total_count'] / 100) + 1
     for x in range(0, timesToPoll):
         logger.logInfo('PollJob: Processed ' + str(x) + ' of ' + str(timesToPoll))
-        processOneRequest(response_dict['links'][3]['href'],formatted_date)
+        response_dict=processOneRequest(response_dict['links'][3]['href'],formatted_date)
     logger.logInfo("PollJob: Status changed to finished")
 
 def processOneRequest(url,formatted_date):
@@ -29,3 +29,4 @@ def processOneRequest(url,formatted_date):
     response_dict = json.loads(response.content)
     formatted_json_data = json.dumps(response_dict, ensure_ascii=False)
     dbAccess.saveUnprocessedData(formatted_date, formatted_json_data)
+    return response_dict
