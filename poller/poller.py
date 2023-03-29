@@ -15,7 +15,7 @@ def runPollJob():
     response = requests.get(
         "https://data.sbb.ch/api/v2/catalog/datasets/ist-daten-sbb/records?limit=100&offset=0&timezone=UTC")
     response_dict = json.loads(response.content)
-    logger.logInfo('Size of Yesterday'+ response_dict['total_count'])
+    logger.logInfo('Size of Yesterday'+ str(response_dict['total_count']))
     formatted_json_data = json.dumps(response_dict, ensure_ascii=False)
     dbAccess.saveUnprocessedData(formatted_date, formatted_json_data)
     timesToPoll = int(response_dict['total_count'] / 100) + 1
