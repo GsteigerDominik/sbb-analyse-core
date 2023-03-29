@@ -4,7 +4,7 @@ import atexit
 import poller.poller
 from flaskr import app
 
-scheduler = BackgroundScheduler(max_instances=1)
+scheduler = BackgroundScheduler(timezone="Europe/Zurich")
  #Config in Swiss local time
 scheduler.add_job(func=poller.poller.runPollJob, trigger='cron', day='*', hour=9, minute=20)
 scheduler.start()
