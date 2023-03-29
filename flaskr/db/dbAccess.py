@@ -8,7 +8,7 @@ conn = psycopg2.connect(DATABASE_URL)
 atexit.register(lambda: conn.close())
 
 
-def saveUnprocessedData(date, json_data):
+def save_unprocessed_data(date, json_data):
     cursor = conn.cursor()
     cursor.execute('INSERT INTO public."t_unprocessed" (date, data) VALUES (%s, %s)',
                    (date, json_data))

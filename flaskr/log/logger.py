@@ -2,13 +2,13 @@ import os
 from datetime import datetime
 
 
-def logInfo(msg):
+def log_info(msg):
     print('[' + str(datetime.now()) + '] [' + str(os.getpid()) + '] [INFO] ' + msg)
 
 
-def logWarn(msg):
+def log_warn(msg):
     print('[' + str(datetime.now()) + '] [' + str(os.getpid()) + '] [WARN] ' + msg)
 
 
-def logError(msg):
+def log_error(msg):
     print('[' + str(datetime.now()) + '] [' + str(os.getpid()) + '] [ERROR] ' + msg)
