@@ -21,9 +21,7 @@ def runPollJob():
     for x in range(0, timesToPoll):
         print('Processed ' + str(x) + ' of ' + str(timesToPoll))
         processOneRequest(response_dict['links'][3]['href'],formatted_date)
-        sys.stdout.flush()
     print("Poll Job finished")
-    sys.stdout.flush()
 
 def processOneRequest(url,formatted_date):
     response = requests.get(url)
