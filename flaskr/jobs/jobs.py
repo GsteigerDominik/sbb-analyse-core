@@ -9,6 +9,6 @@ scheduler = BackgroundScheduler(timezone="Europe/Zurich")
  #First Start the scheduler so no multithreading happends then add the job
  #TODO maybe make the job able to do multithreading
 scheduler.start()
-scheduler.add_job(func=poller.poller.runPollJob, trigger='cron', day='*', hour=16, minute=36)
+scheduler.add_job(func=poller.poller.runPollJob, trigger='cron', day='*', hour=4, minute=0)
 # /!\ IMPORTANT /!\ : Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())

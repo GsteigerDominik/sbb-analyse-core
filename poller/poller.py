@@ -38,7 +38,6 @@ def processOneRequest(url,formatted_date):
     return response_dict
 
 def findNextUrl(response_dict,nextUrl):
-    print(nextUrl)
     if 'error_code' in response_dict:
         return
     for item in response_dict['links']:
