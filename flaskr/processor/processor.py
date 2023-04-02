@@ -3,6 +3,12 @@ from datetime import datetime
 from flaskr.db import dbAccess
 from flaskr.log import logger
 
+def run_process_job():
+    process_station_delay('2023-03-28')
+    process_station_delay('2023-03-29')
+    process_station_delay('2023-03-30')
+    process_station_delay('2023-03-31')
+    process_station_delay('2023-04-01')
 
 def process_station_delay(date):
     logger.log_info("Started processing of station delays from " + date)
