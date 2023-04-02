@@ -8,7 +8,7 @@ from flaskr.log import logger
 
 
 def run_poll_job():
-    logger.log_info("PollJob:  Status changed to started")
+    logger.log_info("PollJob: Status changed to started")
     yesterday = datetime.now() - timedelta(days=1)
     formatted_date = yesterday.strftime('%Y-%m-%d')
     response_dict = process_one_request(

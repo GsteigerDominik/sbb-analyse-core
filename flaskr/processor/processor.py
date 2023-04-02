@@ -1,14 +1,14 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flaskr.db import dbAccess
 from flaskr.log import logger
 
 def run_process_job():
-    process_station_delay('2023-03-28')
-    process_station_delay('2023-03-29')
-    process_station_delay('2023-03-30')
-    process_station_delay('2023-03-31')
-    process_station_delay('2023-04-01')
+    logger.log_info("ProcessJob: Status changed to started")
+    yesterday = datetime.now() - timedelta(days=1)
+    formatted_date = yesterday.strftime('%Y-%m-%d')
+    process_station_delay(formatted_date)
+    logger.log_info("PollJob: Status changed to finished")
 
 def process_station_delay(date):
     logger.log_info("Started processing of station delays from " + date)
