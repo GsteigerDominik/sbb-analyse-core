@@ -24,11 +24,45 @@ def load_unprocessed_data(date):
     return result
 
 
+def load_unprocessed_dates():
+    cursor = conn.cursor()
+    cursor.execute('select date from public."t_unprocessed" group by date;')
+    result = cursor.fetchall()
+    cursor.close()
+    return result
+
+
+def load_station_delay_dates():
+    cursor = conn.cursor()
+    cursor.execute('select date from public."t_station_delay" group by date;')
+    result = cursor.fetchall()
+    cursor.close()
+    return result
+
+
+def load_traintyp_delay_dates():
+    cursor = conn.cursor()
+    cursor.execute('select date from public."t_traintyp_delay" group by date;')
+    result = cursor.fetchall()
+    cursor.close()
+    return result
+
+
 def save_station_delay(date, station_name, delay_count, delay_sum, total_data_points):
     cursor = conn.cursor()
     cursor.execute(
         'INSERT INTO public.t_station_delay(date, "stationName", "delayCount", "delaySum", "totalDataPoints")'
         'VALUES ( %s, %s, %s, %s, %s)',
         (date, station_name, delay_count, delay_sum, total_data_points))
+    conn.commit()
+    cursor.close()
+
+
+def save_traintyp_delay(date, traintyp_name, delay_count, delay_sum, total_data_points):
+    cursor = conn.cursor()
+    cursor.execute(
+        'INSERT INTO public.t_traintyp_delay(date, "trainTypName", "delayCount", "delaySum", "totalDataPoints")'
+        'VALUES ( %s, %s, %s, %s, %s)',
+        (date, traintyp_name, delay_count, delay_sum, total_data_points))
     conn.commit()
     cursor.close()

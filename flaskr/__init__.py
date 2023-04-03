@@ -13,3 +13,5 @@ from flaskr.jobs.jobs import *
 config = configparser.ConfigParser()
 config.read('flaskr/cfg/' + app.config.get('ENV') + '.ini')
 logger.log_info('Config APP-test: '+str(config.getint('APP', 'test')))
+
+processor.run_initial()
