@@ -41,6 +41,8 @@ def traintype():
 
 
 def validate_date(input_date):
+    if input_date is None:
+        return False
     try:
         datetime.strptime(input_date, '%Y-%m-%d')
         return True
