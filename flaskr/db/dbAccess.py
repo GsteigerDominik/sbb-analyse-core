@@ -1,6 +1,7 @@
-import os
-import psycopg2
 import atexit
+import os
+
+import psycopg2
 
 DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL)
@@ -8,7 +9,7 @@ conn = psycopg2.connect(DATABASE_URL)
 atexit.register(lambda: conn.close())
 
 
-def save_unprocessed_data(date, json_data):
+def save_unprocessed(date, json_data):
     cursor = conn.cursor()
     cursor.execute('INSERT INTO public."t_unprocessed" (date, data) VALUES (%s, %s)',
                    (date, json_data))
@@ -40,29 +41,25 @@ def load_station_delay_dates():
     return result
 
 
-def load_traintyp_delay_dates():
+def load_traintype_delay_dates():
     cursor = conn.cursor()
-    cursor.execute('select date from public."t_traintyp_delay" group by date;')
+    cursor.execute('select date from public."t_traintype_delay" group by date;')
     result = cursor.fetchall()
     cursor.close()
     return result
 
 
-def save_station_delay(date, station_name, delay_count, delay_sum, total_data_points):
+def save_station_delay(date, json_data):
     cursor = conn.cursor()
-    cursor.execute(
-        'INSERT INTO public.t_station_delay(date, "stationName", "delayCount", "delaySum", "totalDataPoints")'
-        'VALUES ( %s, %s, %s, %s, %s)',
-        (date, station_name, delay_count, delay_sum, total_data_points))
+    cursor.execute('INSERT INTO public."t_station_delay" (date, data) VALUES (%s, %s)',
+                   (date, json_data))
     conn.commit()
     cursor.close()
 
 
-def save_traintyp_delay(date, traintyp_name, delay_count, delay_sum, total_data_points):
+def save_traintype_delay(date, json_data):
     cursor = conn.cursor()
-    cursor.execute(
-        'INSERT INTO public.t_traintyp_delay(date, "trainTypName", "delayCount", "delaySum", "totalDataPoints")'
-        'VALUES ( %s, %s, %s, %s, %s)',
-        (date, traintyp_name, delay_count, delay_sum, total_data_points))
+    cursor.execute('INSERT INTO public."t_traintype_delay" (date, data) VALUES (%s, %s)',
+                   (date, json_data))
     conn.commit()
     cursor.close()

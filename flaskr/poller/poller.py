@@ -31,7 +31,7 @@ def process_one_request(url, formatted_date):
     response = requests.get(url)
     response_dict = json.loads(response.content)
     formatted_json_data = json.dumps(response_dict, ensure_ascii=False)
-    dbAccess.save_unprocessed_data(formatted_date, formatted_json_data)
+    dbAccess.save_unprocessed(formatted_date, formatted_json_data)
     return response_dict
 
 

@@ -6,10 +6,7 @@ CREATE TABLE IF NOT EXISTS public.t_station_delay
 (
     id oid NOT NULL,
     date date NOT NULL,
-    "delayCount" integer NOT NULL,
-    "delaySum" integer NOT NULL,
-    "totalDataPoints" integer NOT NULL,
-    "stationName" text COLLATE pg_catalog."default" NOT NULL,
+    data jsonb NOT NULL,
     CONSTRAINT t_station_delay_pkey PRIMARY KEY (id)
     )
 
@@ -28,7 +25,7 @@ CREATE SEQUENCE IF NOT EXISTS public."t_station_delay_id_seq"
     MINVALUE 1
     MAXVALUE 2147483647
     CACHE 1
-    OWNED BY t_unprocessed.id;
+    OWNED BY t_station_delay.id;
 
 ALTER SEQUENCE public."t_station_delay_id_seq"
     OWNER TO edmgvaichktckx;

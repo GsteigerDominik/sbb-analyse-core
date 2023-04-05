@@ -1,3 +1,5 @@
+import json
+import pprint
 from datetime import datetime, timedelta
 
 from flaskr.db import dbAccess
@@ -8,12 +10,12 @@ def run_initial():
     logger.log_info("Starting initial Processing")
     to_process = dbAccess.load_unprocessed_dates()
     processed_station = dbAccess.load_station_delay_dates()
-    processed_traintyp = dbAccess.load_traintyp_delay_dates()
+    processed_traintype = dbAccess.load_traintype_delay_dates()
     for date in to_process:
         if date not in processed_station:
             process_station_delay(date[0].strftime('%Y-%m-%d'))
-        if date not in processed_traintyp:
-            process_traintyp_delay(date[0].strftime('%Y-%m-%d'))
+        if date not in processed_traintype:
+            process_traintype_delay(date[0].strftime('%Y-%m-%d'))
     logger.log_info("Finished initial Processing")
 
 
@@ -22,7 +24,7 @@ def run_process_job():
     yesterday = datetime.now() - timedelta(days=1)
     formatted_date = yesterday.strftime('%Y-%m-%d')
     process_station_delay(formatted_date)
-    process_traintyp_delay(formatted_date)
+    process_traintype_delay(formatted_date)
     logger.log_info("PollJob: Status changed to finished")
 
 
@@ -38,40 +40,30 @@ def process_station_delay(date):
                 process_data_point(stationname, stations_dict, data_point)
         else:
             logger.log_warn('No records key in record')
-    for station in stations_dict:
-        dbAccess.save_station_delay(date,
-                                    station,
-                                    stations_dict[station]['delaycount'],
-                                    stations_dict[station]['delaysum'],
-                                    stations_dict[station]['totaldatapoints'])
+    dbAccess.save_station_delay(date,json.dumps(stations_dict))
     logger.log_info("Finished processing of station delays from " + date)
 
 
-def process_traintyp_delay(date):
+def process_traintype_delay(date):
     logger.log_info("Started processing of train types delays from " + date)
-    traintyp_dict = {}
+    traintype_dict = {}
     result = dbAccess.load_unprocessed_data(date)
     for row in result:
         if 'records' in row[2]:
             data_set = row[2]['records']
             for data_point in data_set:
-                traintyp = data_point['record']['fields']['verkehrsmittel_text']
-                process_data_point(traintyp, traintyp_dict, data_point)
+                traintype = data_point['record']['fields']['verkehrsmittel_text']
+                process_data_point(traintype, traintype_dict, data_point)
         else:
             logger.log_warn('No records key in record')
-    for traintyp in traintyp_dict:
-        dbAccess.save_traintyp_delay(date,
-                                     traintyp,
-                                     traintyp_dict[traintyp]['delaycount'],
-                                     traintyp_dict[traintyp]['delaysum'],
-                                     traintyp_dict[traintyp]['totaldatapoints'])
+    dbAccess.save_traintype_delay(date,json.dumps(traintype_dict))
     logger.log_info("Finished processing of train types delays from " + date)
 
 
 def process_data_point(key, dictionary, data_point):
     if key not in dictionary:
         dictionary[key] = {'delaycount': 0, 'delaysum': 0, 'totaldatapoints': 0}
-    if dictionary['record']['fields']['ankunftsverspatung'] == 'true':
+    if data_point['record']['fields']['ankunftsverspatung'] == 'true':
         dictionary[key]['delaycount'] += 1
         actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
         planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
