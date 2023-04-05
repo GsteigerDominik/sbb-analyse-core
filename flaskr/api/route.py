@@ -35,6 +35,7 @@ def station():
 def traintype():
     date = request.args.get('date')
     if validate_date(date):
+        print(date)
         return dbAccess.load_traintype_delay_by_date(date)
     else:
         return dbAccess.load_traintype_delay_all()

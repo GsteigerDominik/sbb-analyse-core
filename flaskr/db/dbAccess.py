@@ -68,7 +68,7 @@ def load_traintype_delay_all():
 def load_traintype_delay_by_date(date):
     cursor = conn.cursor()
     cursor.execute('SELECT date, data FROM public."t_traintype_delay" where date=%s', (date,))
-    result = cursor.fetchall()[0][0]
+    result = cursor.fetchall()
     cursor.close()
     return result
 
