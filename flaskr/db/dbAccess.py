@@ -33,9 +33,41 @@ def load_unprocessed_dates():
     return result
 
 
+def load_station_delay_all():
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM public."t_station_delay"')
+    result = cursor.fetchall()
+    cursor.close()
+    return result
+
+
+def load_station_delay_by_date(date):
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM public."t_station_delay" where date=%s', (date,))
+    result = cursor.fetchall()
+    cursor.close()
+    return result
+
+
 def load_station_delay_dates():
     cursor = conn.cursor()
     cursor.execute('select date from public."t_station_delay" group by date;')
+    result = cursor.fetchall()
+    cursor.close()
+    return result
+
+
+def load_traintype_delay_all():
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM public."t_traintype_delay"')
+    result = cursor.fetchall()
+    cursor.close()
+    return result
+
+
+def load_traintype_delay_by_date(date):
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM public."t_traintype_delay" where date=%s', (date,))
     result = cursor.fetchall()
     cursor.close()
     return result

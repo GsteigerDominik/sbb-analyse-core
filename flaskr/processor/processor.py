@@ -1,5 +1,4 @@
 import json
-import pprint
 from datetime import datetime, timedelta
 
 from flaskr.db import dbAccess
@@ -40,7 +39,7 @@ def process_station_delay(date):
                 process_data_point(stationname, stations_dict, data_point)
         else:
             logger.log_warn('No records key in record')
-    dbAccess.save_station_delay(date,json.dumps(stations_dict))
+    dbAccess.save_station_delay(date, json.dumps(stations_dict))
     logger.log_info("Finished processing of station delays from " + date)
 
 
@@ -56,7 +55,7 @@ def process_traintype_delay(date):
                 process_data_point(traintype, traintype_dict, data_point)
         else:
             logger.log_warn('No records key in record')
-    dbAccess.save_traintype_delay(date,json.dumps(traintype_dict))
+    dbAccess.save_traintype_delay(date, json.dumps(traintype_dict))
     logger.log_info("Finished processing of train types delays from " + date)
 
 
