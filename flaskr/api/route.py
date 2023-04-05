@@ -5,6 +5,7 @@ from flask import request
 from flaskr import app
 from flaskr.db import dbAccess
 from flaskr.jobs.jobs import scheduler
+from flask_cors import CORS
 
 
 @app.route('/')
@@ -23,6 +24,7 @@ def jobs():
 
 
 @app.route("/api/station")
+@cross_origin()
 def station():
     date = request.args.get('date')
     if validate_date(date):
@@ -32,6 +34,7 @@ def station():
 
 
 @app.route("/api/traintype")
+@cross_origin()
 def traintype():
     date = request.args.get('date')
     if validate_date(date):
