@@ -35,14 +35,7 @@ def process_station_delay(date):
             data_set = row[2]['records']
             for data_point in data_set:
                 stationname = data_point['record']['fields']['haltestellen_name']
-                if stationname not in stations_dict:
-                    stations_dict[stationname] = {'delaycount': 0, 'delaysum': 0, 'totaldatapoints': 0}
-                if data_point['record']['fields']['ankunftsverspatung'] == 'true':
-                    stations_dict[stationname]['delaycount'] += 1
-                    actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
-                    planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
-                    stations_dict[stationname]['delaysum'] += int((actual - planed).total_seconds() / 60)
-                stations_dict[stationname]['totaldatapoints'] += 1
+                process_data_point(stationname, stations_dict, data_point)
         else:
             logger.log_warn('No records key in record')
     for station in stations_dict:
@@ -63,20 +56,24 @@ def process_traintyp_delay(date):
             data_set = row[2]['records']
             for data_point in data_set:
                 traintyp = data_point['record']['fields']['verkehrsmittel_text']
-                if traintyp not in traintyp_dict:
-                    traintyp_dict[traintyp] = {'delaycount': 0, 'delaysum': 0, 'totaldatapoints': 0}
-                if data_point['record']['fields']['ankunftsverspatung'] == 'true':
-                    traintyp_dict[traintyp]['delaycount'] += 1
-                    actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
-                    planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
-                    traintyp_dict[traintyp]['delaysum'] += int((actual - planed).total_seconds() / 60)
-                traintyp_dict[traintyp]['totaldatapoints'] += 1
+                process_data_point(traintyp, traintyp_dict, data_point)
         else:
             logger.log_warn('No records key in record')
     for traintyp in traintyp_dict:
         dbAccess.save_traintyp_delay(date,
-                                    traintyp,
-                                    traintyp_dict[traintyp]['delaycount'],
-                                    traintyp_dict[traintyp]['delaysum'],
-                                    traintyp_dict[traintyp]['totaldatapoints'])
+                                     traintyp,
+                                     traintyp_dict[traintyp]['delaycount'],
+                                     traintyp_dict[traintyp]['delaysum'],
+                                     traintyp_dict[traintyp]['totaldatapoints'])
     logger.log_info("Finished processing of train types delays from " + date)
+
+
+def process_data_point(key, dictionary, data_point):
+    if key not in dictionary:
+        dictionary[key] = {'delaycount': 0, 'delaysum': 0, 'totaldatapoints': 0}
+    if dictionary['record']['fields']['ankunftsverspatung'] == 'true':
+        dictionary[key]['delaycount'] += 1
+        actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
+        planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
+        dictionary[key]['delaysum'] += int((actual - planed).total_seconds() / 60)
+    dictionary[key]['totaldatapoints'] += 1
