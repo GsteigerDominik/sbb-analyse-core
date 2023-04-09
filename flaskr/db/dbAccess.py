@@ -35,10 +35,10 @@ def load_unprocessed_dates():
 
 def load_station_delay_all():
     cursor = conn.cursor()
-    cursor.execute('SELECT date, data FROM public."t_station_delay"')
+    cursor.execute('SELECT data FROM public."t_station_delay"')
     result = cursor.fetchall()
     cursor.close()
-    return result
+    return sum_delay_data(result)
 
 
 def load_station_delay_by_date(date):
@@ -59,10 +59,10 @@ def load_station_delay_dates():
 
 def load_traintype_delay_all():
     cursor = conn.cursor()
-    cursor.execute('SELECT date, data FROM public."t_traintype_delay"')
+    cursor.execute('SELECT data FROM public."t_traintype_delay"')
     result = cursor.fetchall()
     cursor.close()
-    return result
+    return sum_delay_data(result)
 
 
 def load_traintype_delay_by_date(date):
@@ -95,3 +95,15 @@ def save_traintype_delay(date, json_data):
                    (date, json_data))
     conn.commit()
     cursor.close()
+
+
+def sum_delay_data(result):
+    summed_delays = {}
+    for day in result:
+        for key in day[0]:
+            if key not in summed_delays:
+                summed_delays[key] = {'delaycount': 0, 'delaysum': 0, 'totaldatapoints': 0}
+            summed_delays[key]['delaycount'] += day[0][key]['delaycount']
+            summed_delays[key]['delaysum'] += day[0][key]['delaysum']
+            summed_delays[key]['totaldatapoints'] += day[0][key]['totaldatapoints']
+    return summed_delays
