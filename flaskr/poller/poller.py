@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import requests
 
 from flaskr.db import dbAccess
-from flaskr.log import logger
+from flaskr.log import logger, slack
 
 
 def run_poll_job():
@@ -25,6 +25,7 @@ def run_poll_job():
         else:
             break
     logger.log_info("PollJob: Status changed to finished")
+    slack.post_job_finished_msg(formatted_date, 'Polled')
 
 
 def process_one_request(url, formatted_date):

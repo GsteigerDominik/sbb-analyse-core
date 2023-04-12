@@ -17,20 +17,20 @@ def post_msg(message, channel_id="#sp-arbeit"):
 
 
 def handle_event(event):
-    #This import is needed to prevent a circular dependency
-    from flaskr.jobs.jobs import get_jobs
     message = ""
     if 'help' in event['text']:
         message = ':male_mage: You can use following commands:\n' \
-                  'help' \
-                  'jobs' \
+                  'help\n' \
+                  'jobs\n' \
                   'data-status-raw\n' \
                   'data-status-traintype\n' \
                   'data-status-station'
     elif 'jobs' in event["text"]:
-        message = ':male_mage: These are our Jobs, you can see when they next run is\n'
+        # This import is needed to prevent a circular dependency
+        from flaskr.jobs.jobs import get_jobs
+        message = ':male_mage: These are our Jobs, you can see when there next run is:\n'
         for job in get_jobs():
-            message += job.name + ' ' + job.func_ref + ' ' + str(job.next_run_time)+ '\n'
+            message += job.name + ' ' + job.func_ref + ' ' + str(job.next_run_time) + '\n'
     elif 'data-status-raw' in event["text"]:
         message = ':male_mage: We got a lot of raw data\n' \
                   'For all this dates we got raw data:'
@@ -54,6 +54,6 @@ def handle_event(event):
     post_msg(message, event["channel"])
 
 
-def post_job_finished_msg(date):
-    message = ':construction_worker: Processed data of ' + date
+def post_job_finished_msg(date, name):
+    message = ':construction_worker: ' + name + ' data of ' + date
     post_msg(message)
