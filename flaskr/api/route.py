@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask import request, jsonify
 
+import flaskr
 from flaskr import app
 from flaskr.db import dbAccess
 from flaskr.log import slack
@@ -54,7 +55,7 @@ def slack_url_verification():
 @app.route("/api/slack/status", methods=['POST'])
 def send_slack_status():
     data = request.get_json()
-    print(data)
+    flaskr.log.logger(data)
 
 
 def validate_date(input_date):
