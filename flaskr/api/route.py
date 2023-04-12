@@ -58,8 +58,14 @@ def slack_events():
         event = request_dict["event"]
         if event["type"] == "app_mention":
             channel_id = event["channel"]
-            message = "Hello, world!"
-            flaskr.log.logger.log_info(str(event))
+            message = "Hello, you can interact with me (Available commands: data-status)"
+            if 'data-status' in event["text"]:
+                message='We got allot of data :male_mage:\n' \
+                        'For all this dates we got data:\n'
+                dates=dbAccess.load_unprocessed_dates()
+                for date in dates:
+                    message+=date[0].strftime('%Y-%m-%d')+'\n'
+
             try:
                 response = client.chat_postMessage(channel=channel_id, text=message)
             except SlackApiError as e:
