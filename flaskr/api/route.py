@@ -9,7 +9,7 @@ from flaskr import app
 from flaskr.db import dbAccess
 from flaskr.jobs.jobs import scheduler
 from flaskr.log import slack
-from flaskr.log.slack import client
+from flaskr.log.slack import client, handle_event
 
 
 @app.route('/')
@@ -57,19 +57,7 @@ def slack_events():
     if "event" in request_dict:
         event = request_dict["event"]
         if event["type"] == "app_mention":
-            channel_id = event["channel"]
-            message = "Hello, you can interact with me (Available commands: data-status)"
-            if 'data-status' in event["text"]:
-                message='We got allot of data :male_mage:\n' \
-                        'For all this dates we got data:\n'
-                dates=dbAccess.load_unprocessed_dates()
-                for date in dates:
-                    message+=date[0].strftime('%Y-%m-%d')+'\n'
-
-            try:
-                response = client.chat_postMessage(channel=channel_id, text=message)
-            except SlackApiError as e:
-                print(f"Error: {e.response['error']}")
+            handle_event(event)
 
     return Response(status=200)
 
