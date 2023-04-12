@@ -4,6 +4,7 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
 from flaskr.db import dbAccess
+from flaskr.jobs.jobs import scheduler
 from flaskr.log import logger
 
 client = WebClient(token=os.environ.get("SLACK_BOT_TOKEN"))
@@ -20,9 +21,15 @@ def handle_event(event):
     message = ""
     if 'help' in event['text']:
         message = ':male_mage: You can use following commands:\n' \
+                  'help' \
+                  'jobs' \
                   'data-status-raw\n'\
                   'data-status-traintype\n' \
                   'data-status-station'
+    elif 'jobs' in event["text"]:
+        message = ':male_mage: These are our Jobs, you can see when they next run is\n'
+        for job in scheduler.get_jobs():
+            message+= job.name+' '+job.func_ref+' '+ str(job.next_run_time)
     elif 'data-status-raw' in event["text"]:
         message = ':male_mage: We got a lot of raw data\n' \
                   'For all this dates we got raw data:'
@@ -30,14 +37,14 @@ def handle_event(event):
         for date in dates:
             message += ' ' + date[0].strftime('%Y-%m-%d')
     elif 'data-status-traintype' in event["text"]:
-        message = ':male_mage: We got a lot of processed data\n' \
-                  'For all this dates we got processed data:'
+        message = ':male_mage: We got a lot of traintype data\n' \
+                  'For all this dates we got traintype data:'
         dates = dbAccess.load_traintype_delay_dates()
         for date in dates:
             message += ' ' + date[0].strftime('%Y-%m-%d')
     elif 'data-status-station' in event["text"]:
-        message = ':male_mage: We got a lot of processed data\n' \
-                  'For all this dates we got processed data:'
+        message = ':male_mage: We got a lot of station data\n' \
+                  'For all this dates we got station data:'
         dates = dbAccess.load_station_delay_dates()
         for date in dates:
             message += ' ' + date[0].strftime('%Y-%m-%d')
