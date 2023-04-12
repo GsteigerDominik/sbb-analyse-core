@@ -30,7 +30,7 @@ def handle_event(event):
     elif 'jobs' in event["text"]:
         message = ':male_mage: These are our Jobs, you can see when they next run is\n'
         for job in get_jobs():
-            message += job.name + ' ' + job.func_ref + ' ' + str(job.next_run_time)
+            message += job.name + ' ' + job.func_ref + ' ' + str(job.next_run_time)+ '\n'
     elif 'data-status-raw' in event["text"]:
         message = ':male_mage: We got a lot of raw data\n' \
                   'For all this dates we got raw data:'
