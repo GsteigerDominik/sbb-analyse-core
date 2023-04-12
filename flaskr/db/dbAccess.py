@@ -59,7 +59,7 @@ def load_station_delay_dates():
 
 def load_traintype_delay_all():
     cursor = conn.cursor()
-    cursor.execute('SELECT data FROM public."t_traintype_delay"')
+    cursor.execute('SELECT data FROM public."t_traintype_delay" LIMIT 5')
     result = cursor.fetchall()
     cursor.close()
     return sum_delay_data(result)
