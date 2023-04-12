@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import request, Response
 from slack_sdk.errors import SlackApiError
 
+import flaskr.log.logger
 from flaskr import app
 from flaskr.db import dbAccess
 from flaskr.jobs.jobs import scheduler
@@ -58,6 +59,7 @@ def slack_events():
         if event["type"] == "app_mention":
             channel_id = event["channel"]
             message = "Hello, world!"
+            flaskr.log.logger.log_info(str(event))
             try:
                 response = client.chat_postMessage(channel=channel_id, text=message)
             except SlackApiError as e:
