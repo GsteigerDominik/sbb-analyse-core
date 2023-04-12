@@ -8,10 +8,12 @@ logger.log_info('Starting app...')
 
 app = Flask(__name__)
 from flaskr.api.route import *
-from flaskr.jobs.jobs import *
 
 config = configparser.ConfigParser()
 config.read('flaskr/cfg/' + app.config.get('ENV') + '.ini')
 logger.log_info('Config APP-test: '+str(config.getint('APP', 'test')))
 
-processor.run_initial()
+#Only run this in production
+if app.config.get('ENV') == 'production':
+    from flaskr.jobs.jobs import *
+    processor.run_initial()

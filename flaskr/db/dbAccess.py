@@ -3,7 +3,7 @@ import os
 
 import psycopg2
 
-DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL = os.environ['DATABASE_URL_PROD']
 conn = psycopg2.connect(DATABASE_URL)
 # /!\ IMPORTANT /!\ : Shut down the db connection when exiting the app
 atexit.register(lambda: conn.close())
@@ -34,10 +34,7 @@ def load_unprocessed_dates():
 
 
 def load_station_delay_all():
-    cursor = conn.cursor()
-    cursor.execute('SELECT data FROM public."t_station_delay"')
-    result = cursor.fetchall()
-    cursor.close()
+    result = load_all_with_paging('t_station_delay')
     return sum_delay_data(result)
 
 
@@ -58,10 +55,7 @@ def load_station_delay_dates():
 
 
 def load_traintype_delay_all():
-    cursor = conn.cursor()
-    cursor.execute('SELECT data FROM public."t_traintype_delay" LIMIT 5')
-    result = cursor.fetchall()
-    cursor.close()
+    result = load_all_with_paging("t_traintype_delay")
     return sum_delay_data(result)
 
 
@@ -107,3 +101,19 @@ def sum_delay_data(result):
             summed_delays[key]['delaysum'] += day[0][key]['delaysum']
             summed_delays[key]['totaldatapoints'] += day[0][key]['totaldatapoints']
     return summed_delays
+
+
+def load_all_with_paging(table, page_size=5):
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(*) FROM public."' + table + '"')
+    count = cursor.fetchone()[0]
+    pages = (count // page_size) + (count % page_size > 0)
+    result = []
+    for page in range(pages):
+        offset = page * page_size
+        cursor.execute('SELECT data FROM public."' + table + '" ORDER BY id OFFSET %s LIMIT %s',
+                       (offset, page_size))
+    page_result = cursor.fetchall()
+    result += page_result
+    cursor.close()
+    return result
