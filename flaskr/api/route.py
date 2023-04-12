@@ -4,6 +4,7 @@ from flask import request
 
 from flaskr import app
 from flaskr.db import dbAccess
+from flaskr.log import slack
 from flaskr.jobs.jobs import scheduler
 
 
@@ -39,6 +40,11 @@ def traintype():
         return dbAccess.load_traintype_delay_by_date(date)
     else:
         return dbAccess.load_traintype_delay_all()
+
+
+@app.route("/api/slack/status")
+def send_slack_status():
+    slack.post_msg('Hello i got triggered through the api')
 
 
 def validate_date(input_date):
