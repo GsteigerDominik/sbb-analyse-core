@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import request
+from flask import request, jsonify
 
 from flaskr import app
 from flaskr.db import dbAccess
@@ -42,9 +42,14 @@ def traintype():
         return dbAccess.load_traintype_delay_all()
 
 
-@app.route("/api/slack/status")
+@app.route("/api/slack/status", methods=['POST'])
 def send_slack_status():
-    slack.post_msg('Hello i got triggered through the api')
+    data = request.get_json()
+    if data['type'] == 'url_verification':
+        slack.post_msg('Hello i got triggered through the api')
+        return jsonify({'challenge': data['challenge']}), 200
+    else:
+        return '', 200
 
 
 def validate_date(input_date):
