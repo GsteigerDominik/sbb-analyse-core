@@ -27,7 +27,7 @@ def handle_event(event):
                   'data-status-station'
     elif 'jobs' in event["text"]:
         # This import is needed to prevent a circular dependency
-        from flaskr.jobs.jobs import get_jobs
+        from flaskr.bl.jobs import get_jobs
         message = ':male_mage: These are our Jobs, you can see when there next run is:\n'
         for job in get_jobs():
             message += job.name + ' ' + job.func_ref + ' ' + str(job.next_run_time) + '\n'

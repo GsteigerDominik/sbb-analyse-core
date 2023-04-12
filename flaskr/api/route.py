@@ -5,7 +5,7 @@ from flask import request, Response
 
 from flaskr import app
 from flaskr.db import dbAccess
-from flaskr.jobs.jobs import get_jobs
+from flaskr.bl.jobs import get_jobs
 from flaskr.log.slack import handle_event
 
 

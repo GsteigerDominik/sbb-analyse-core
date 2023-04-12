@@ -2,8 +2,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 import atexit
 
-from flaskr.poller import poller
-from flaskr.processor import processor
+from flaskr.bl import poller, processor
 
 scheduler = BackgroundScheduler(timezone="Europe/Zurich")
  #Config in Swiss local time
