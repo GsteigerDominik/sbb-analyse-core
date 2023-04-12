@@ -42,14 +42,19 @@ def traintype():
         return dbAccess.load_traintype_delay_all()
 
 
-@app.route("/api/slack/status", methods=['POST'])
+@app.route("/api/slack", methods=['POST'])
 def send_slack_status():
     data = request.get_json()
     if data['type'] == 'url_verification':
-        slack.post_msg('Hello i got triggered through the api')
         return jsonify({'challenge': data['challenge']}), 200
     else:
         return '', 200
+
+
+@app.route("/api/slack/status", methods=['POST'])
+def send_slack_status():
+    data = request.get_json()
+    print(data)
 
 
 def validate_date(input_date):
