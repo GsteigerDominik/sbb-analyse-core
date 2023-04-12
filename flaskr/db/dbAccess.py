@@ -34,7 +34,7 @@ def load_unprocessed_dates():
 
 
 def load_station_delay_all():
-    result = load_all_with_paging('t_station_delay')
+    result = load_all_with_paging('t_station_delay', page_size=2)
     return sum_delay_data(result)
 
 
