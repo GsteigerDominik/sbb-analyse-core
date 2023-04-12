@@ -43,7 +43,7 @@ def traintype():
 
 
 @app.route("/api/slack", methods=['POST'])
-def send_slack_status():
+def slack_url_verification():
     data = request.get_json()
     if data['type'] == 'url_verification':
         return jsonify({'challenge': data['challenge']}), 200
