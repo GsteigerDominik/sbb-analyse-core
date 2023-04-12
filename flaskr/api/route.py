@@ -1,12 +1,14 @@
+import json
 from datetime import datetime
 
-from flask import request, jsonify
+from flask import request, Response
+from slack_sdk.errors import SlackApiError
 
-import flaskr
 from flaskr import app
 from flaskr.db import dbAccess
-from flaskr.log import slack
 from flaskr.jobs.jobs import scheduler
+from flaskr.log import slack
+from flaskr.log.slack import client
 
 
 @app.route('/')
@@ -43,19 +45,25 @@ def traintype():
         return dbAccess.load_traintype_delay_all()
 
 
-@app.route("/api/slack", methods=['POST'])
-def slack_url_verification():
-    data = request.get_json()
-    if data['type'] == 'url_verification':
-        return jsonify({'challenge': data['challenge']}), 200
-    else:
-        return '', 200
+@app.route("/slack/events", methods=["POST"])
+def slack_events():
+    request_body = request.get_data().decode("utf-8")
+    request_dict = json.loads(request_body)
 
+    if "challenge" in request_dict:
+        return Response(request_dict["challenge"], mimetype="text/plain")
 
-@app.route("/api/slack/status", methods=['POST'])
-def send_slack_status():
-    data = request.get_json()
-    flaskr.log.logger(data)
+    if "event" in request_dict:
+        event = request_dict["event"]
+        if event["type"] == "app_mention":
+            channel_id = event["channel"]
+            message = "Hello, world!"
+            try:
+                response = client.chat_postMessage(channel=channel_id, text=message)
+            except SlackApiError as e:
+                print(f"Error: {e.response['error']}")
+
+    return Response(status=200)
 
 
 def validate_date(input_date):
