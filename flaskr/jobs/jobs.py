@@ -14,3 +14,7 @@ scheduler.add_job(func=poller.run_poll_job, trigger='cron', day='*', hour=4, min
 scheduler.add_job(func=processor.run_process_job, trigger='cron', day='*', hour=5, minute=0)
 # /!\ IMPORTANT /!\ : Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
+
+
+def get_jobs():
+    return scheduler.get_jobs()

@@ -2,14 +2,11 @@ import json
 from datetime import datetime
 
 from flask import request, Response
-from slack_sdk.errors import SlackApiError
 
-import flaskr.log.logger
 from flaskr import app
 from flaskr.db import dbAccess
-from flaskr.jobs.jobs import scheduler
-from flaskr.log import slack
-from flaskr.log.slack import client, handle_event
+from flaskr.jobs.jobs import get_jobs
+from flaskr.log.slack import handle_event
 
 
 @app.route('/')
@@ -21,7 +18,7 @@ def index():
 def jobs():
     html = "<p>Use LocalTime in DevEnvironment</p> <br><table><tr><th>Name</th><th>Function</th><th>Next " \
            "Execution</th></tr> "
-    for job in scheduler.get_jobs():
+    for job in get_jobs():
         html += "<tr><td>" + job.name \
                 + "</td><td>" + job.func_ref + "</td><td>" + str(job.next_run_time) + "</td></tr>"
     return html + "</table>"

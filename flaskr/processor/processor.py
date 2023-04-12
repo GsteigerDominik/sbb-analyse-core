@@ -2,7 +2,8 @@ import json
 from datetime import datetime, timedelta
 
 from flaskr.db import dbAccess
-from flaskr.log import logger, slack
+from flaskr.log import logger
+from flaskr.log.slack import post_job_finished_msg
 
 
 def run_initial():
@@ -24,7 +25,7 @@ def run_process_job():
     formatted_date = yesterday.strftime('%Y-%m-%d')
     process_station_delay(formatted_date)
     process_traintype_delay(formatted_date)
-    slack.post_job_finished_msg(formatted_date)
+    post_job_finished_msg(formatted_date)
     logger.log_info("PollJob: Status changed to finished")
 
 
