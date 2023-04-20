@@ -9,6 +9,7 @@ logger.log_info('Starting app...')
 app = Flask(__name__)
 from flaskr.api.route import *
 from flaskr.jobs.jobs import *
+from flaskr.web.web import *
 
 config = configparser.ConfigParser()
 config.read('flaskr/cfg/' + app.config.get('ENV') + '.ini')

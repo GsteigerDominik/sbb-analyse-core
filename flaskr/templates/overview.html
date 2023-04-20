@@ -1,0 +1,27 @@
+{% extends 'base.html' %} {% block overview %}
+<h2>Traintypes from {{ date }}</h2>
+<div class="row">
+    <div class="col-md-12">
+        <table id="data" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Traintype</th>
+                    <th>delaycount</th>
+                    <th>delaysum</th>
+                    <th>totaldatapoints</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for train in data %}
+                <tr>
+                    <td>{{ train.name }}</td>
+                    <td>{{ train.delaycount }}</td>
+                    <td>{{ train.delaysum }}</td>
+                    <td>{{ train.totaldatapoints }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
