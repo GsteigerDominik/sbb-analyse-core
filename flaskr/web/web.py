@@ -11,9 +11,8 @@ from flaskr.db import dbAccess
 @app.route('/web')
 def web():
     result = table_of_traintypes()
-    traintypes = result[0]
-    date = result[1]
-    return flask.render_template('overview.html', data=traintypes, date=date)
+    traintypes = result
+    return flask.render_template('overview.html', data=traintypes)
 
 @app.route('/web/map')
 def map():
@@ -35,12 +34,11 @@ def create_figure():
     return fig
 
 def table_of_traintypes():
-    x = dbAccess.load_traintype_delay_all()[0][1]
-    date = dbAccess.load_traintype_delay_all()[0][0]
+    print(dbAccess.load_traintype_delay_all())
+    x = dbAccess.load_traintype_delay_all()
     result = []
     for key, value in x.items():
         new_dict = {'name': key, 'delaysum': value['delaysum'], 'delaycount': value['delaycount'], 'totaldatapoints': value['totaldatapoints']}
         result.append(new_dict)
 
-    return_value = (result, date)
-    return return_value
+    return result
