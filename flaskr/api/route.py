@@ -1,10 +1,12 @@
+import json
 from datetime import datetime
 
-from flask import request
+from flask import request, Response
 
 from flaskr import app
 from flaskr.db import dbAccess
-from flaskr.jobs.jobs import scheduler
+from flaskr.bl.jobs import get_jobs
+from flaskr.log.slack import handle_event
 
 
 @app.route('/')
@@ -16,7 +18,7 @@ def index():
 def jobs():
     html = "<p>Use LocalTime in DevEnvironment</p> <br><table><tr><th>Name</th><th>Function</th><th>Next " \
            "Execution</th></tr> "
-    for job in scheduler.get_jobs():
+    for job in get_jobs():
         html += "<tr><td>" + job.name \
                 + "</td><td>" + job.func_ref + "</td><td>" + str(job.next_run_time) + "</td></tr>"
     return html + "</table>"
@@ -39,6 +41,22 @@ def traintype():
         return dbAccess.load_traintype_delay_by_date(date)
     else:
         return dbAccess.load_traintype_delay_all()
+
+
+@app.route("/slack/events", methods=["POST"])
+def slack_events():
+    request_body = request.get_data().decode("utf-8")
+    request_dict = json.loads(request_body)
+
+    if "challenge" in request_dict:
+        return Response(request_dict["challenge"], mimetype="text/plain")
+
+    if "event" in request_dict:
+        event = request_dict["event"]
+        if event["type"] == "app_mention":
+            handle_event(event)
+
+    return Response(status=200)
 
 
 def validate_date(input_date):
