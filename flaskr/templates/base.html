@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+      integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+      crossorigin=""
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+      crossorigin=""
+    />
     <title>Document</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <nav>
-        <a href="{{ url_for('web') }}">Home</a>
-        <a href="{{ url_for('map') }}">Map</a>
+      <a href="{{ url_for('web') }}">Home</a>
+      <a href="{{ url_for('map') }}">Map</a>
     </nav>
 
     <h1>SBB Analyse</h1>
-    <img src="/test.png" alt="my plot" /> {% block overview %} {% endblock %} {% block map %} {% endblock %}
-</body>
-
+    <div id="map" style="height: 400px"></div>
+    <img src="/test.png" alt="my plot" /> {% block overview %} {% endblock %} {%
+    block map %} {% endblock %}
+  </body>
+  <script>
+    var map = L.map("map").setView([51.505, -0.09], 13);
+    var marker = L.marker([51.5, -0.09]).addTo(map);
+  </script>
 </html>

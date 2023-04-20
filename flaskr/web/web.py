@@ -10,13 +10,14 @@ from flaskr.db import dbAccess
 
 @app.route('/web')
 def web():
-    result = table_of_traintypes()
-    traintypes = result
-    return flask.render_template('overview.html', data=traintypes)
+    traintypes = get_Array(dbAccess.load_traintype_delay_all())
+    stations = get_Array(dbAccess.load_station_delay_all())
+    return flask.render_template('overview.html', trains=traintypes, stations=stations)
 
 @app.route('/web/map')
 def map():
-    return flask.render_template('map.html')
+    stations = get_Array(dbAccess.load_station_delay_all())
+    return flask.render_template('map.html', stations=stations)
 
 @app.route('/test.png')
 def plot_png():
@@ -33,9 +34,7 @@ def create_figure():
     axis.plot(xs, ys)
     return fig
 
-def table_of_traintypes():
-    print(dbAccess.load_traintype_delay_all())
-    x = dbAccess.load_traintype_delay_all()
+def get_Array(x):
     result = []
     for key, value in x.items():
         new_dict = {'name': key, 'delaysum': value['delaysum'], 'delaycount': value['delaycount'], 'totaldatapoints': value['totaldatapoints']}
