@@ -37,7 +37,7 @@ def process_station_delay(date):
             data_set = row[2]['records']
             for data_point in data_set:
                 stationname = data_point['record']['fields']['haltestellen_name']
-                process_data_point(stationname, stations_dict, data_point)
+                process_data_point(stationname, stations_dict, data_point, True)
         else:
             logger.log_warn('No records key in record')
     dbAccess.save_station_delay(date, json.dumps(stations_dict))
@@ -53,16 +53,19 @@ def process_traintype_delay(date):
             data_set = row[2]['records']
             for data_point in data_set:
                 traintype = data_point['record']['fields']['verkehrsmittel_text']
-                process_data_point(traintype, traintype_dict, data_point)
+                process_data_point(traintype, traintype_dict, data_point, False)
         else:
             logger.log_warn('No records key in record')
     dbAccess.save_traintype_delay(date, json.dumps(traintype_dict))
     logger.log_info("Finished processing of train types delays from " + date)
 
 
-def process_data_point(key, dictionary, data_point):
+def process_data_point(key, dictionary, data_point, save_geopos):
     if key not in dictionary:
         dictionary[key] = {'delaycount': 0, 'delaysum': 0, 'totaldatapoints': 0}
+        if save_geopos and data_point['record']['fields']['geopos'] is not None:
+            dictionary[key]['geopos_lat'] = data_point['record']['fields']['geopos']['lat']
+            dictionary[key]['geopos_lon'] = data_point['record']['fields']['geopos']['lon']
     if data_point['record']['fields']['ankunftsverspatung'] == 'true':
         dictionary[key]['delaycount'] += 1
         actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
