@@ -25,12 +25,19 @@
     </nav>
 
     <h1>SBB Analyse</h1>
-    <div id="map" style="height: 400px"></div>
+    <div id="map" style="height: 600px"></div>
     <img src="/test.png" alt="my plot" /> {% block overview %} {% endblock %} {%
     block map %} {% endblock %}
   </body>
   <script>
-    var map = L.map("map").setView([51.505, -0.09], 13);
-    var marker = L.marker([51.5, -0.09]).addTo(map);
+    var map = L.map("map").setView([47.3769, 8.5417], 13);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+      maxZoom: 18,
+    }).addTo(map);
+    var zurich = L.marker([47.3769, 8.5417]).addTo(map);
+    var arr = "{{ stations }}";
+    console.log(arr);
   </script>
 </html>

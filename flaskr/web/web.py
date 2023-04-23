@@ -34,10 +34,14 @@ def create_figure():
     axis.plot(xs, ys)
     return fig
 
-def get_Array(x):
+def get_Array(dict):
     result = []
-    for key, value in x.items():
-        new_dict = {'name': key, 'delaysum': value['delaysum'], 'delaycount': value['delaycount'], 'totaldatapoints': value['totaldatapoints']}
-        result.append(new_dict)
+    for key, value in dict.items():
+        if 'geopos_lat' in value:
+            new_dict = {'name': key, 'delaysum': value['delaysum'], 'delaycount': value['delaycount'], 'totaldatapoints': value['totaldatapoints'], 'geopos_lat': value['geopos_lat'], 'geopos_lon': value['geopos_lon']}
+        else:
+            new_dict = {'name': key, 'delaysum': value['delaysum'], 'delaycount': value['delaycount'], 'totaldatapoints': value['totaldatapoints']}
 
+        result.append(new_dict)
+    print(result)
     return result
