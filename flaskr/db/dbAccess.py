@@ -109,7 +109,12 @@ def sum_delay_data(result):
     for day in result:
         for key in day[0]:
             if key not in summed_delays:
-                summed_delays[key] = {'delaycount': 0, 'delaysum': 0, 'totaldatapoints': 0}
+                summed_delays[key] = {'delaycount': 0,
+                                      'delaysum': 0,
+                                      'totaldatapoints': 0}
+                if 'geopos_lat' in day[0][key]:
+                    summed_delays[key]['geopos_lat']=day[0][key]['geopos_lat']
+                    summed_delays[key]['geopos_lon']=day[0][key]['geopos_lon']
             summed_delays[key]['delaycount'] += day[0][key]['delaycount']
             summed_delays[key]['delaysum'] += day[0][key]['delaysum']
             summed_delays[key]['totaldatapoints'] += day[0][key]['totaldatapoints']
