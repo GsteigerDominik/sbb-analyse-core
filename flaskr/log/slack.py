@@ -63,4 +63,4 @@ def calculate_date_interval(dates):
     df['date_diff'] = (df['date'] - df['date'].shift()).fillna(pd.Timedelta(days=1))
     df['interval'] = (df['date_diff'] > pd.Timedelta(days=1)).cumsum()
     intervals = df.groupby('interval')['date'].agg(['min', 'max']).reset_index()
-    return ', '.join([f'{interval[1]["min"].strftime("%Y-%m-%d")} - {interval[1]["max"].strftime("%Y-%m-%d")}' for interval in intervals.iterrows()])
+    return '\n,'.join([f'{interval[1]["min"].strftime("%Y-%m-%d")} - {interval[1]["max"].strftime("%Y-%m-%d")}' for interval in intervals.iterrows()])

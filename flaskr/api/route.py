@@ -24,6 +24,7 @@ def jobs():
     return html + "</table>"
 
 
+#TODO Remove me
 @app.route("/api/station")
 def station():
     date = request.args.get('date')
@@ -33,6 +34,7 @@ def station():
         return dbAccess.load_station_delay_all()
 
 
+#TODO Remove me
 @app.route("/api/traintype")
 def traintype():
     date = request.args.get('date')
