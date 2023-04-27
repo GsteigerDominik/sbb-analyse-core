@@ -11,8 +11,6 @@ from flaskr.db import dbAccess
 @app.route('/web', methods=('GET', 'POST'))
 def web():
     if request.method == 'POST':
-        print(request.method)
-        print('date', request.form['date'])
         stations = get_Array(dbAccess.load_station_delay_by_date(request.form['date'])[0][1])
     elif request.method == 'GET':
         stations = get_Array(dbAccess.load_station_delay_all())
