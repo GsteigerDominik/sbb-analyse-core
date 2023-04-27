@@ -25,19 +25,69 @@
     </nav>
 
     <h1>SBB Analyse</h1>
+    <label for="dates">Choose a date:</label>
+    <form method="POST">
+      <select name="date" id="date">
+        {% for date in dates %}
+        <option value="{{ date }}">{{ date }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Submit</button>
+    </form>
+
     <div id="map" style="height: 600px"></div>
-    <img src="/test.png" alt="my plot" /> {% block overview %} {% endblock %} {%
-    block map %} {% endblock %}
+    {% block overview %} {% endblock %}
   </body>
   <script>
-    var map = L.map("map").setView([47.3769, 8.5417], 13);
+    var map = L.map("map").setView([46.8182, 8.2275], 8);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
       maxZoom: 18,
     }).addTo(map);
-    var zurich = L.marker([47.3769, 8.5417]).addTo(map);
-    var arr = "{{ stations }}";
-    console.log(arr);
+
+    var stations = '{{ stations|tojson|replace("\'", "") }}';
+
+    var data = JSON.parse(stations);
+    for (var i = 0; i < data.length; i++) {
+      var station = data[i];
+      if (station.geopos_lat && station.geopos_lon) {
+        if (station.delaycount < 2) {
+          var size = 10;
+        } else if (station.delaycount < 5) {
+          var size = 30;
+        } else if (station.delaycount < 10) {
+          var size = 40;
+        } else if (station.delaycount < 20) {
+          var size = 50;
+        } else {
+          var size = 10;
+        }
+
+        var icon = L.icon({
+          iconUrl: "{{ url_for('static', filename='marker.png') }}",
+          iconSize: [size, size],
+        });
+
+        var x = L.marker([station.geopos_lat, station.geopos_lon], {
+          icon: icon,
+        }).addTo(map);
+
+        var label =
+          "Name: " +
+          station.name +
+          "<br>" +
+          "Delay count: " +
+          station.delaycount +
+          "<br>" +
+          "Delay sum: " +
+          station.delaysum +
+          "<br>" +
+          "Total datapoints: " +
+          station.totaldatapoints;
+        x.bindPopup(label);
+        console.log(size);
+      }
+    }
   </script>
 </html>
