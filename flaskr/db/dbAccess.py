@@ -35,7 +35,7 @@ def load_unprocessed_dates():
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute('select date from public."t_unprocessed" group by date;')
-        result = cursor.fetchall()
+        result = [row[0] for row in cursor.fetchall()]
         cursor.close()
         return result
 
@@ -58,7 +58,7 @@ def load_station_delay_dates():
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute('select date from public."t_station_delay" group by date;')
-        result = cursor.fetchall()
+        result = [row[0] for row in cursor.fetchall()]
         cursor.close()
         return result
 
@@ -81,7 +81,7 @@ def load_traintype_delay_dates():
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute('select date from public."t_traintype_delay" group by date;')
-        result = cursor.fetchall()
+        result = [row[0] for row in cursor.fetchall()]
         cursor.close()
         return result
 

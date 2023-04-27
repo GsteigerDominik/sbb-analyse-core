@@ -12,9 +12,9 @@ def run_initial():
     processed_traintype = dbAccess.load_traintype_delay_dates()
     for date in to_process:
         if date not in processed_station:
-            process_station_delay(date[0].strftime('%Y-%m-%d'))
+            process_station_delay(date.strftime('%Y-%m-%d'))
         if date not in processed_traintype:
-            process_traintype_delay(date[0].strftime('%Y-%m-%d'))
+            process_traintype_delay(date.strftime('%Y-%m-%d'))
     logger.log_info("Finished initial Processing")
 
 
