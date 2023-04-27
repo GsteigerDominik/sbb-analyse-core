@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -35,20 +36,17 @@ def handle_event(event):
         message = ':male_mage: We got a lot of raw data\n' \
                   'For all this dates we got raw data:'
         dates = dbAccess.load_unprocessed_dates()
-        for date in dates:
-            message += ' ' + date[0].strftime('%Y-%m-%d')
+        message += calculate_date_interval(dates)
     elif 'data-status-traintype' in event["text"]:
         message = ':male_mage: We got a lot of traintype data\n' \
                   'For all this dates we got traintype data:'
         dates = dbAccess.load_traintype_delay_dates()
-        for date in dates:
-            message += ' ' + date[0].strftime('%Y-%m-%d')
+        message += calculate_date_interval(dates)
     elif 'data-status-station' in event["text"]:
         message = ':male_mage: We got a lot of station data\n' \
                   'For all this dates we got station data:'
         dates = dbAccess.load_station_delay_dates()
-        for date in dates:
-            message += ' ' + date[0].strftime('%Y-%m-%d')
+        message += calculate_date_interval(dates)
     else:
         message = ":male_mage: Hello, how can i help you? If you dont know me, use 'help'!"
     post_msg(message, event["channel"])
@@ -57,3 +55,12 @@ def handle_event(event):
 def post_job_finished_msg(date, name):
     message = ':construction_worker: ' + name + ' data of ' + date
     post_msg(message)
+
+
+def calculate_date_interval(dates):
+    df = pd.DataFrame(dates, columns=['date'])
+    df = df.sort_values('date')
+    df['date_diff'] = (df['date'] - df['date'].shift()).fillna(pd.Timedelta(days=1))
+    df['interval'] = (df['date_diff'] > pd.Timedelta(days=1)).cumsum()
+    intervals = df.groupby('interval')['date'].agg(['min', 'max']).reset_index()
+    return ', '.join([f'{interval[1]["min"].strftime("%Y-%m-%d")} - {interval[1]["max"].strftime("%Y-%m-%d")}' for interval in intervals.iterrows()])
