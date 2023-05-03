@@ -49,3 +49,19 @@ def get_Array(dict):
 
         result.append(new_dict)
     return result
+
+def boxplot():
+    data = dbAccess.load_station_delay_all()
+    sns.boxplot(data, linewidth=5)
+    
+def geometric_distribution():
+    data = dbAccess.load_station_delay_all()
+    delays = [d[0] for d in data]
+    total_delays = len(delays)
+    unique_delays, counts = np.unique(delays, return_counts=True)
+    probabilities = counts / total_delays
+    plt.stem(unique_delays, probabilities, use_line_collection=True)
+    plt.title('Probability Mass Function of Delays')
+    plt.xlabel('Delay (minutes)')
+    plt.ylabel('Probability')
+    plt.show()
