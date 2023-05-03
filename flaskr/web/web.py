@@ -7,6 +7,8 @@ from flask import Response, request
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from flaskr.db import dbAccess
+import matplotlib as plt
+import seaborn as sns
 
 @app.route('/web', methods=('GET', 'POST'))
 def web():
@@ -49,3 +51,15 @@ def get_Array(dict):
 
         result.append(new_dict)
     return result
+
+def linear_regression():
+    x = dbAccess.load_traintype_delay_all()
+    y = dbAccess.load_station_delay_all()
+    sns.set_theme(style="darkgrid")
+    return sns.regplot(x,y)
+    slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+
+def violinplot():
+    delays = dbAccess.load_traintype_delay_all()
+    sns.violinplot(data=delays x="delays", color='skyblue', scale="count")
