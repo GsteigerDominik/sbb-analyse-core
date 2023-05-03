@@ -7,6 +7,9 @@ from flask import Response, request
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from flaskr.db import dbAccess
+import matplotlib as plt
+import seaborn as sns
+from scipy.stats import geom
 
 @app.route('/web', methods=('GET', 'POST'))
 def web():
