@@ -63,10 +63,9 @@ def geometric_distribution():
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
     probabilities = counts / total_delays
-    plt.stem(unique_delays, probabilities, use_line_collection=True)
+    plt.pyplot.stem(unique_delays, probabilities, use_line_collection=True)
     plt.title('Probability Mass Function of Delays')
     plt.xlabel('Delay (minutes)')
     plt.ylabel('Probability')
     plt.show()
     return Response(plt.savefig('foo.png'), mimetype='image/png')
-
