@@ -11,6 +11,7 @@ from flaskr.db import dbAccess
 import matplotlib as plt
 import seaborn as sns
 from scipy.stats import geom
+import numpy as np
 
 
 @app.route('/web', methods=('GET', 'POST'))
@@ -55,6 +56,7 @@ def boxplot():
     data = dbAccess.load_station_delay_all()
     sns.boxplot(data, linewidth=5)
     
+@app.route('/stats.png')
 def geometric_distribution():
     data = dbAccess.load_station_delay_all()
     delays = [d[0] for d in data]
@@ -66,3 +68,5 @@ def geometric_distribution():
     plt.xlabel('Delay (minutes)')
     plt.ylabel('Probability')
     plt.show()
+    return Response(plt.savefig('foo.png'), mimetype='image/png')
+
