@@ -61,8 +61,8 @@ def geometric_distribution():
     data = dbAccess.load_station_delay_all()
     delays = [d[0] for d in data]
     total_delays = len(delays)
-    unique_delays, counts = np.unique(delays, return_counts=True)
-    probabilities = counts / total_delays
+    unique_delays = list(set(data))
+    probabilities = 5 / total_delays
     plt.pyplot.stem(unique_delays, probabilities, use_line_collection=True)
     plt.pyplot.title('Probability Mass Function of Delays')
     plt.pyplot.xlabel('Delay (minutes)')
