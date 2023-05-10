@@ -1,3 +1,4 @@
+import datetime
 import io
 import flask
 from flaskr import app
@@ -15,33 +16,29 @@ from scipy.stats import geom
 @app.route('/web', methods=('GET', 'POST'))
 def web():
     if request.method == 'POST':
-        stations = get_Array(dbAccess.load_station_delay_by_date(request.form['date'])[0][1])
+        if request.form['date'] == 'all':
+            stations = get_Array(dbAccess.load_station_delay_all())
+            traintypes = get_Array(dbAccess.load_traintype_delay_all())
+        else:
+            stations = get_Array(dbAccess.load_station_delay_by_date(request.form['date'])[0][1])
+            traintypes = get_Array(dbAccess.load_traintype_delay_by_date(request.form['date'])[0][1])
+        scope = request.form['date']
     elif request.method == 'GET':
         stations = get_Array(dbAccess.load_station_delay_all())
+        traintypes = get_Array(dbAccess.load_traintype_delay_all())
+        scope = 'all'
 
-    traintypes = get_Array(dbAccess.load_traintype_delay_all())
     dates = dbAccess.load_station_delay_dates()
-    return flask.render_template('overview.html', trains=traintypes, stations=stations, dates=dates)
+    dates.sort()
+    dates.insert(0, 'all')
 
-
-@app.route('/web/map')
-def map():
-    stations = get_Array(dbAccess.load_station_delay_all())
-    return flask.render_template('map.html', stations=stations)
+    return flask.render_template('base.html', trains=traintypes, stations=stations, dates=dates, scope=scope)
 
 @app.route('/marker.png')
 def marker_png():
     with open('static/marker.png', 'rb') as f:
         marker_png = f.read()
     return Response(marker_png, mimetype='image/png')
-
-def create_figure():
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
-    xs = range(100)
-    ys = [random.randint(1, 50) for x in xs]
-    axis.plot(xs, ys)
-    return fig
 
 def get_Array(dict):
     result = []
@@ -69,5 +66,3 @@ def geometric_distribution():
     plt.xlabel('Delay (minutes)')
     plt.ylabel('Probability')
     plt.show()
-
-    
