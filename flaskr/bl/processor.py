@@ -96,7 +96,7 @@ def process_data_point(key, dictionary, data_point, save_geopos):
 def boxplot_one():
     data = get_all_extracted_delays()
     fig, ax = plt.subplots()
-    ax.boxplot(data, linewidth=5)
+    ax.boxplot(data, boxprops=dict(linewidth=5))
     plt.title('Boxplot of Delays')
     plt.xlabel('Delay')
     plt.ylabel('Minutes')
