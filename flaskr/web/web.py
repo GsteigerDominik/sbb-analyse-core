@@ -64,9 +64,11 @@ def geometric_distribution():
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
     probabilities = counts / total_delays
+    unique_delays = np.array([float(delay) for delay in unique_delays])
     plt.pyplot.stem(unique_delays, probabilities, use_line_collection=True)
-    plt.pyplot.title('Probability Mass Function of Delays')
+    plt.pyplot.title('Geometric Distribution Delays')
     plt.pyplot.xlabel('Delay (minutes)')
     plt.pyplot.ylabel('Probability')
+    plt.pyplot.xticks(range(len(unique_delays)), unique_delays)  # set the tick labels
     plt.pyplot.show()
     return Response(plt.savefig('foo.png'), mimetype='image/png')
