@@ -6,6 +6,9 @@ from matplotlib import pyplot as plt
 
 from flaskr.db import dbAccess
 from flaskr.log import logger, slack
+import numpy as np
+import matplotlib as plt
+from datetime import datetime, timedelta
 
 
 def run_initial():
