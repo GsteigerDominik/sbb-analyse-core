@@ -76,23 +76,6 @@ def extract_delays():
 
     return delays
 
-def geometric_distribution_200():
-
-    delays = extract_delays()
-    print(delays)
-    total_delays = len(delays)
-    unique_delays, counts = np.unique(delays, return_counts=True)
-    probabilities = counts / total_delays
-
-    plt.pyplot.stem(unique_delays, probabilities, markerfmt='', use_line_collection=False)
-    plt.pyplot.title('Probability of unique Delays')
-    plt.pyplot.xlabel('Delay (minutes)')
-    plt.pyplot.ylabel('Probability')
-    plt.pyplot.grid()
-    plt.pyplot.show()
-
-    return Response(plt.savefig('foo.png'), mimetype='image/png')
-
 @app.route('/stats.png') 
 def geometric_distribution_60():
     delays = extract_delays()
@@ -105,7 +88,7 @@ def geometric_distribution_60():
     unique_delays = unique_delays[mask]
     probabilities = probabilities[mask]
     
-    plt.pyplot.stem(unique_delays, probabilities, markerfmt='', use_line_collection=False)
+    plt.pyplot.stem(unique_delays, probabilities, markerfmt='o', use_line_collection=False)
     plt.pyplot.title('Probability of unique Delays')
     plt.pyplot.xlabel('Delay (minutes)')
     plt.pyplot.ylabel('Probability')
