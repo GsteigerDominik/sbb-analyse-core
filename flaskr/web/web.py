@@ -13,6 +13,8 @@ import seaborn as sns
 from scipy.stats import geom
 import numpy as np
 
+from datetime import datetime, timedelta
+
 
 @app.route('/web', methods=('GET', 'POST'))
 def web():
@@ -57,18 +59,24 @@ def boxplot():
     sns.boxplot(data, linewidth=5)
 
 
-def extract_delays(data_point):
+def extract_delays():
+    date = dbAccess.load_unprocessed_dates()
     delays = []
-    
-    if data_point['record']['fields']['ankunftsverspatung'] == 'true':
-        actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
-        planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
-        delays.append(int((actual - planed).total_seconds() / 60))
+
+    for d in date:
+        result = dbAccess.load_unprocessed_data(d)
+        for row in result:
+            if 'records' in row[2]:
+                data_set = row[2]['records']
+                for data_point in data_set:
+                    if data_point['record']['fields']['ankunftsverspatung'] == 'true':
+                        actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
+                        planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
+                        delays.append(int((actual - planed).total_seconds() / 60))
 
     return delays
 
-@app.route('/stats.png') 
-def geometric_distribution():
+def geometric_distribution_200():
 
     delays = extract_delays()
     print(delays)
@@ -76,10 +84,33 @@ def geometric_distribution():
     unique_delays, counts = np.unique(delays, return_counts=True)
     probabilities = counts / total_delays
 
-    plt.pyplot.stem(unique_delays, probabilities, use_line_collection=True)
-    plt.pyplot.title('Geometric Distribution of Delays')
+    plt.pyplot.stem(unique_delays, probabilities, markerfmt='', use_line_collection=False)
+    plt.pyplot.title('Probability of unique Delays')
     plt.pyplot.xlabel('Delay (minutes)')
     plt.pyplot.ylabel('Probability')
+    plt.pyplot.grid()
+    plt.pyplot.show()
+
+    return Response(plt.savefig('foo.png'), mimetype='image/png')
+
+@app.route('/stats.png') 
+def geometric_distribution_60():
+    delays = extract_delays()
+    total_delays = len(delays)
+    unique_delays, counts = np.unique(delays, return_counts=True)
+    probabilities = counts / total_delays
+    
+    # Filter delays and probabilities to include only values less than or equal to 60
+    mask = unique_delays <= 60
+    unique_delays = unique_delays[mask]
+    probabilities = probabilities[mask]
+    
+    plt.pyplot.stem(unique_delays, probabilities, markerfmt='', use_line_collection=False)
+    plt.pyplot.title('Probability of unique Delays')
+    plt.pyplot.xlabel('Delay (minutes)')
+    plt.pyplot.ylabel('Probability')
+    plt.pyplot.grid()
+    plt.pyplot.xlim(0, 60)  # set the x-axis limit to 0-60
     plt.pyplot.show()
     
     return Response(plt.savefig('foo.png'), mimetype='image/png')
