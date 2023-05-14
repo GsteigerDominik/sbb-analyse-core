@@ -57,36 +57,29 @@ def boxplot():
     sns.boxplot(data, linewidth=5)
 
 
-def extract_delays():
-    dates = dbAccess.load_unprocessed_dates()
+def extract_delays(data_point):
     delays = []
-
-    for d in dates:
-        data = dbAccess.load_unprocessed_data(d)
-
-        for record in data:
-            abfahrt_delay = record[1] == 'true'
-            ankunft_delay = record[2] == 'true'
-            
-            if abfahrt_delay or ankunft_delay:
-                delays.append(record)
+    
+    if data_point['record']['fields']['ankunftsverspatung'] == 'true':
+        actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
+        planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
+        delays.append(int((actual - planed).total_seconds() / 60))
 
     return delays
 
-
-
 @app.route('/stats.png') 
 def geometric_distribution():
-    data = []
-    data.append(extract_delays())
-    delays = [d[0] for d in data]
+
+    delays = extract_delays()
     print(delays)
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
     probabilities = counts / total_delays
+
     plt.pyplot.stem(unique_delays, probabilities, use_line_collection=True)
     plt.pyplot.title('Geometric Distribution of Delays')
     plt.pyplot.xlabel('Delay (minutes)')
     plt.pyplot.ylabel('Probability')
     plt.pyplot.show()
+    
     return Response(plt.savefig('foo.png'), mimetype='image/png')
