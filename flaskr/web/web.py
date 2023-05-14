@@ -56,19 +56,16 @@ def get_Array(dict):
 def boxplot():
     data = dbAccess.load_station_delay_all()
     sns.boxplot(data, linewidth=5)
-    
-@app.route('/stats.png')
+
+@app.route('/stats.png') 
 def geometric_distribution():
     data = dbAccess.load_station_delay_all()
     delays = [d[0] for d in data]
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
     probabilities = counts / total_delays
-    unique_delays = np.array([float(delay) for delay in unique_delays])
-    plt.pyplot.stem(unique_delays, probabilities, use_line_collection=True)
-    plt.pyplot.title('Geometric Distribution Delays')
-    plt.pyplot.xlabel('Delay (minutes)')
-    plt.pyplot.ylabel('Probability')
-    plt.pyplot.xticks(range(len(unique_delays)), unique_delays)  # set the tick labels
-    plt.pyplot.show()
-    return Response(plt.savefig('foo.png'), mimetype='image/png')
+    plt.stem(unique_delays, probabilities, use_line_collection=True)
+    plt.title('Probability Mass Function of Delays')
+    plt.xlabel('Delay (minutes)')
+    plt.ylabel('Probability')
+    plt.show()
