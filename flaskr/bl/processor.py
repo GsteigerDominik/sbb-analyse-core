@@ -98,13 +98,13 @@ def process_data_point(key, dictionary, data_point, save_geopos):
 
 def boxplot_one():
     data = get_all_extracted_delays()
-    plt.boxplot(data)
+    plt.pyplot.boxplot(data)
 
-    plt.title('Boxplot of Delays')
-    plt.xlabel('Delay')
-    plt.ylabel('Minutes')
-    plt.grid()
-    plt.savefig('boxplot.png', format='png')
+    plt.pyplot.title('Boxplot of Delays')
+    plt.pyplot.xlabel('Delay')
+    plt.pyplot.ylabel('Minutes')
+    plt.pyplot.grid()
+    plt.pyplot.savefig('boxplot.png')
 
 
 def geometric_distribution_60():
@@ -123,4 +123,4 @@ def geometric_distribution_60():
     plt.pyplot.ylabel('Probability')
     plt.pyplot.grid()
     plt.pyplot.xlim(0, 60)
-    plt.pyplot.savefig(('foo.png'), mimetype='image/png')
+    plt.pyplot.savefig('delaydistribution.png')
