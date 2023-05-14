@@ -59,17 +59,21 @@ def boxplot():
 @app.route('/stats.png') 
 def geometric_distribution():
     dates = dbAccess.load_unprocessed_dates()
-    data = dbAccess.load_unprocessed_data(dates)
+    data = []
+
+    for d in dates:
+        data.append(dbAccess.load_unprocessed_data(d))
+
     delays = [d[0] for d in data]
-    print("data: ",delays)
+    print("data: ",data)
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
     print(delays)
-    probabilities = counts / total_delays
+    #probabilities = counts / total_delays
     print(unique_delays)
-    plt.pyplot.stem(unique_delays, probabilities, use_line_collection=True)
-    plt.pyplot.title('Geometric Distribution of Delays')
-    plt.pyplot.xlabel('Delay (minutes)')
-    plt.pyplot.ylabel('Probability')
-    plt.pyplot.show()
-    return Response(plt.savefig('foo.png'), mimetype='image/png')
+    #plt.pyplot.stem(unique_delays, probabilities, use_line_collection=True)
+    #plt.pyplot.title('Geometric Distribution of Delays')
+    #plt.pyplot.xlabel('Delay (minutes)')
+    #plt.pyplot.ylabel('Probability')
+    #plt.pyplot.show()
+    #return Response(plt.savefig('foo.png'), mimetype='image/png')
