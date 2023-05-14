@@ -4,7 +4,6 @@ from datetime import datetime
 from flask import request, Response
 
 from flaskr import app
-from flaskr.db import dbAccess
 from flaskr.bl.jobs import get_jobs
 from flaskr.log.slack import handle_event
 
@@ -22,27 +21,6 @@ def jobs():
         html += "<tr><td>" + job.name \
                 + "</td><td>" + job.func_ref + "</td><td>" + str(job.next_run_time) + "</td></tr>"
     return html + "</table>"
-
-
-#TODO Remove me
-@app.route("/api/station")
-def station():
-    date = request.args.get('date')
-    if validate_date(date):
-        return dbAccess.load_station_delay_by_date(date)
-    else:
-        return dbAccess.load_station_delay_all()
-
-
-#TODO Remove me
-@app.route("/api/traintype")
-def traintype():
-    date = request.args.get('date')
-    if validate_date(date):
-        print(date)
-        return dbAccess.load_traintype_delay_by_date(date)
-    else:
-        return dbAccess.load_traintype_delay_all()
 
 
 @app.route("/slack/events", methods=["POST"])
