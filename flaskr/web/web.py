@@ -9,7 +9,6 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from flaskr.db import dbAccess
 import matplotlib as plt
-import seaborn as sns
 from scipy.stats import geom
 import numpy as np
 
@@ -74,9 +73,10 @@ def extract_delays():
 @app.route('/stats.png') 
 def boxplot_one():
     data = extract_delays()
-    ax = plt.pyplot.subplots()
+    fig, ax = plt.subplots()
     ax.boxplot(data, linewidth=5)
-    plt.pyplot.show()
+    plt.show()
+
 
 
 def geometric_distribution_60():
