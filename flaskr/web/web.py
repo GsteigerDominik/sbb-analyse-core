@@ -72,11 +72,11 @@ def extract_delays():
     return delays
 
 @app.route('/stats.png') 
-def boxplot():
+def boxplot_one():
     data = extract_delays()
-    ax = plt.subplots()
+    ax = plt.pyplot.subplots()
     ax.boxplot(data, linewidth=5)
-    plt.show()
+    plt.pyplot.show()
 
 
 def geometric_distribution_60():
