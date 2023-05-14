@@ -1,5 +1,8 @@
 import json
 from datetime import datetime, timedelta
+from flask import Response
+
+from matplotlib import pyplot as plt
 
 from flaskr.db import dbAccess
 from flaskr.log import logger, slack
@@ -27,6 +30,22 @@ def run_process_job():
     slack.post_job_finished_msg(formatted_date, 'Processed')
     logger.log_info("PollJob: Status changed to finished")
 
+def get_all_extracted_delays():
+    date = dbAccess.load_unprocessed_dates()
+    delays = []
+
+    for d in date:
+        result = dbAccess.load_unprocessed_data(d)
+        for row in result:
+            if 'records' in row[2]:
+                data_set = row[2]['records']
+                for data_point in data_set:
+                    if data_point['record']['fields']['ankunftsverspatung'] == 'true':
+                        actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
+                        planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
+                        delays.append(int((actual - planed).total_seconds() / 60))
+
+    return delays
 
 def process_station_delay(date):
     logger.log_info("Started processing of station delays from " + date)
@@ -72,3 +91,31 @@ def process_data_point(key, dictionary, data_point, save_geopos):
         planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
         dictionary[key]['delaysum'] += int((actual - planed).total_seconds() / 60)
     dictionary[key]['totaldatapoints'] += 1
+
+
+def boxplot_one():
+    data = get_all_extracted_delays()
+    fig, ax = plt.subplots()
+    ax.boxplot(data, linewidth=5)
+    plt.show()
+
+
+def geometric_distribution_60():
+    delays = get_all_extracted_delays()
+    total_delays = len(delays)
+    unique_delays, counts = np.unique(delays, return_counts=True)
+    probabilities = counts / total_delays
+    
+    mask = unique_delays <= 60
+    unique_delays = unique_delays[mask]
+    probabilities = probabilities[mask]
+    
+    plt.pyplot.stem(unique_delays, probabilities, markerfmt='o', use_line_collection=False)
+    plt.pyplot.title('Probability of unique Delays')
+    plt.pyplot.xlabel('Delay (minutes)')
+    plt.pyplot.ylabel('Probability')
+    plt.pyplot.grid()
+    plt.pyplot.xlim(0, 60)  # set the x-axis limit to 0-60
+    plt.pyplot.show()
+    
+    return Response(plt.savefig('foo.png'), mimetype='image/png')

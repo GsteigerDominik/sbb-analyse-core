@@ -8,6 +8,7 @@ from flask import Response, request
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from flaskr.db import dbAccess
+from flaskr.bl import processor
 import matplotlib as plt
 from scipy.stats import geom
 import numpy as np
@@ -53,26 +54,9 @@ def get_Array(dict):
         result.append(new_dict)
     return result
 
-def extract_delays():
-    date = dbAccess.load_unprocessed_dates()
-    delays = []
-
-    for d in date:
-        result = dbAccess.load_unprocessed_data(d)
-        for row in result:
-            if 'records' in row[2]:
-                data_set = row[2]['records']
-                for data_point in data_set:
-                    if data_point['record']['fields']['ankunftsverspatung'] == 'true':
-                        actual = datetime.fromisoformat(data_point['record']['fields']['an_prognose'])
-                        planed = datetime.fromisoformat(data_point['record']['fields']['ankunftszeit'])
-                        delays.append(int((actual - planed).total_seconds() / 60))
-
-    return delays
-
 @app.route('/stats.png') 
 def boxplot_one():
-    data = extract_delays()
+    data = processor.get_all_extracted_delays()
     fig, ax = plt.subplots()
     ax.boxplot(data, linewidth=5)
     plt.show()
@@ -80,7 +64,7 @@ def boxplot_one():
 
 
 def geometric_distribution_60():
-    delays = extract_delays()
+    delays = processor.get_all_extracted_delays()
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
     probabilities = counts / total_delays
