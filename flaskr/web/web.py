@@ -85,7 +85,6 @@ def geometric_distribution_60():
     unique_delays, counts = np.unique(delays, return_counts=True)
     probabilities = counts / total_delays
     
-    # Filter delays and probabilities to include only values less than or equal to 60
     mask = unique_delays <= 60
     unique_delays = unique_delays[mask]
     probabilities = probabilities[mask]
