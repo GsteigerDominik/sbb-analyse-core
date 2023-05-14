@@ -54,11 +54,6 @@ def get_Array(dict):
         result.append(new_dict)
     return result
 
-def boxplot():
-    data = dbAccess.load_station_delay_all()
-    sns.boxplot(data, linewidth=5)
-
-
 def extract_delays():
     date = dbAccess.load_unprocessed_dates()
     delays = []
@@ -77,6 +72,13 @@ def extract_delays():
     return delays
 
 @app.route('/stats.png') 
+def boxplot():
+    data = extract_delays()
+    ax = plt.subplots()
+    ax.boxplot(data, linewidth=5)
+    plt.show()
+
+
 def geometric_distribution_60():
     delays = extract_delays()
     total_delays = len(delays)
