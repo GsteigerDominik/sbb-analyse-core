@@ -1,11 +1,15 @@
+import datetime
+import io
 import flask
-import matplotlib as plt
-import numpy as np
-from flask import Response, request
-
 from flaskr import app
-from flaskr.bl import processor
+import io
+import random
+from flask import Response, request
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from flaskr.db import dbAccess
+from scipy.stats import geom
+
+from datetime import datetime, timedelta
 
 
 @app.route('/web', methods=('GET', 'POST'))
@@ -29,53 +33,19 @@ def web():
 
     return flask.render_template('base.html', trains=traintypes, stations=stations, dates=dates, scope=scope)
 
-
 @app.route('/marker.png')
 def marker_png():
     with open('static/marker.png', 'rb') as f:
         marker_png = f.read()
     return Response(marker_png, mimetype='image/png')
 
-
 def get_Array(dict):
     result = []
     for key, value in dict.items():
         if "geopos_lat" in value:
-            new_dict = {"name": key, "delaysum": value["delaysum"], "delaycount": value["delaycount"],
-                        "totaldatapoints": value["totaldatapoints"], "geopos_lat": value["geopos_lat"],
-                        "geopos_lon": value["geopos_lon"]}
+            new_dict = {"name": key, "delaysum": value["delaysum"], "delaycount": value["delaycount"], "totaldatapoints": value["totaldatapoints"], "geopos_lat": value["geopos_lat"], "geopos_lon": value["geopos_lon"]}
         else:
-            new_dict = {"name": key, "delaysum": value["delaysum"], "delaycount": value["delaycount"],
-                        "totaldatapoints": value["totaldatapoints"]}
+            new_dict = {"name": key, "delaysum": value["delaysum"], "delaycount": value["delaycount"], "totaldatapoints": value["totaldatapoints"]}
 
         result.append(new_dict)
     return result
-
-
-@app.route('/stats.png')
-def boxplot_one():
-    data = processor.get_all_extracted_delays()
-    fig, ax = plt.subplots()
-    ax.boxplot(data, linewidth=5)
-    plt.show()
-
-
-def geometric_distribution_60():
-    delays = processor.get_all_extracted_delays()
-    total_delays = len(delays)
-    unique_delays, counts = np.unique(delays, return_counts=True)
-    probabilities = counts / total_delays
-
-    mask = unique_delays <= 60
-    unique_delays = unique_delays[mask]
-    probabilities = probabilities[mask]
-
-    plt.pyplot.stem(unique_delays, probabilities, markerfmt='o', use_line_collection=False)
-    plt.pyplot.title('Probability of unique Delays')
-    plt.pyplot.xlabel('Delay (minutes)')
-    plt.pyplot.ylabel('Probability')
-    plt.pyplot.grid()
-    plt.pyplot.xlim(0, 60)  # set the x-axis limit to 0-60
-    plt.pyplot.show()
-
-    return Response(plt.savefig('foo.png'), mimetype='image/png')
