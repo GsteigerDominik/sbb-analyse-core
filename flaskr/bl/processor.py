@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timedelta
 from flask import Response
 
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
 from flaskr.db import dbAccess
 from flaskr.log import logger, slack
@@ -98,8 +98,8 @@ def process_data_point(key, dictionary, data_point, save_geopos):
 
 def boxplot_one():
     data = get_all_extracted_delays()
-    fig, ax = plt.subplots()
-    ax.boxplot(data, boxprops=dict(linewidth=5))
+    plt.boxplot(data)
+
     plt.title('Boxplot of Delays')
     plt.xlabel('Delay')
     plt.ylabel('Minutes')
@@ -111,16 +111,16 @@ def geometric_distribution_60():
     delays = get_all_extracted_delays()
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
-    probabilities = counts / total_delays
+    prob = counts / total_delays
     
     mask = unique_delays <= 60
     unique_delays = unique_delays[mask]
-    probabilities = probabilities[mask]
+    prob = prob[mask]
     
-    plt.pyplot.stem(unique_delays, probabilities, markerfmt='o', use_line_collection=False)
+    plt.pyplot.stem(unique_delays, prob, markerfmt='o', use_line_collection=False)
     plt.pyplot.title('Probability of unique Delays')
     plt.pyplot.xlabel('Delay (minutes)')
     plt.pyplot.ylabel('Probability')
     plt.pyplot.grid()
-    plt.pyplot.xlim(0, 60)  # set the x-axis limit to 0-60
+    plt.pyplot.xlim(0, 60)
     plt.pyplot.savefig(('foo.png'), mimetype='image/png')
