@@ -97,7 +97,11 @@ def boxplot_one():
     data = get_all_extracted_delays()
     fig, ax = plt.subplots()
     ax.boxplot(data, linewidth=5)
-    plt.show()
+    plt.title('Boxplot of Delays')
+    plt.xlabel('Delay')
+    plt.ylabel('Minutes')
+    plt.grid()
+    plt.savefig('boxplot.png', format='png')
 
 
 def geometric_distribution_60():
@@ -116,6 +120,4 @@ def geometric_distribution_60():
     plt.pyplot.ylabel('Probability')
     plt.pyplot.grid()
     plt.pyplot.xlim(0, 60)  # set the x-axis limit to 0-60
-    plt.pyplot.show()
-    
-    return Response(plt.savefig('foo.png'), mimetype='image/png')
+    plt.pyplot.savefig(('foo.png'), mimetype='image/png')
