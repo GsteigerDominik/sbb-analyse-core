@@ -1,14 +1,12 @@
 import json
 from datetime import datetime, timedelta
-from flask import Response
 
+import matplotlib as plt
 import matplotlib.pyplot as plt
+import numpy as np
 
 from flaskr.db import dbAccess
 from flaskr.log import logger, slack
-import numpy as np
-import matplotlib as plt
-from datetime import datetime, timedelta
 
 
 def run_initial():
@@ -33,6 +31,7 @@ def run_process_job():
     slack.post_job_finished_msg(formatted_date, 'Processed')
     logger.log_info("PollJob: Status changed to finished")
 
+
 def get_all_extracted_delays():
     date = dbAccess.load_unprocessed_dates()
     delays = []
@@ -49,6 +48,7 @@ def get_all_extracted_delays():
                         delays.append(int((actual - planed).total_seconds() / 60))
 
     return delays
+
 
 def process_station_delay(date):
     logger.log_info("Started processing of station delays from " + date)
@@ -112,11 +112,11 @@ def geometric_distribution_60():
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
     prob = counts / total_delays
-    
+
     mask = unique_delays <= 60
     unique_delays = unique_delays[mask]
     prob = prob[mask]
-    
+
     plt.pyplot.stem(unique_delays, prob, markerfmt='o', use_line_collection=False)
     plt.pyplot.title('Probability of unique Delays')
     plt.pyplot.xlabel('Delay (minutes)')
