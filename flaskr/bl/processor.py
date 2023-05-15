@@ -1,7 +1,6 @@
 import json
 from datetime import datetime, timedelta
 
-import matplotlib as plt
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -98,13 +97,13 @@ def process_data_point(key, dictionary, data_point, save_geopos):
 
 def boxplot_one():
     data = get_all_extracted_delays()
-    plt.pyplot.boxplot(data)
+    plt.boxplot(data)
 
-    plt.pyplot.title('Boxplot of Delays')
-    plt.pyplot.xlabel('Delay')
-    plt.pyplot.ylabel('Minutes')
-    plt.pyplot.grid()
-    plt.pyplot.savefig('boxplot.png')
+    plt.title('Boxplot of Delays')
+    plt.xlabel('Delay')
+    plt.ylabel('Minutes')
+    plt.grid()
+    plt.savefig('./flaskr/static/boxplot.png')
 
 
 def geometric_distribution_60():
@@ -117,10 +116,10 @@ def geometric_distribution_60():
     unique_delays = unique_delays[mask]
     prob = prob[mask]
 
-    plt.pyplot.stem(unique_delays, prob, markerfmt='o', use_line_collection=False)
-    plt.pyplot.title('Probability of unique Delays')
-    plt.pyplot.xlabel('Delay (minutes)')
-    plt.pyplot.ylabel('Probability')
-    plt.pyplot.grid()
-    plt.pyplot.xlim(0, 60)
-    plt.pyplot.savefig('delaydistribution.png')
+    plt.stem(unique_delays, prob, markerfmt='o', use_line_collection=False)
+    plt.title('Probability of unique Delays')
+    plt.xlabel('Delay (minutes)')
+    plt.ylabel('Probability')
+    plt.grid()
+    plt.xlim(0, 60)
+    plt.savefig('./flaskr/static/delaydistribution.png')
