@@ -11,6 +11,7 @@ scheduler = BackgroundScheduler(timezone="Europe/Zurich")
 scheduler.start()
 scheduler.add_job(func=poller.run_poll_job, trigger='cron', day='*', hour=4, minute=0)
 scheduler.add_job(func=processor.run_process_job, trigger='cron', day='*', hour=5, minute=0)
+scheduler.add_job(func=processor.run_calculate_statistics_job(), trigger='cron', day='*', hour=18, minute=22)
 # /!\ IMPORTANT /!\ : Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
 

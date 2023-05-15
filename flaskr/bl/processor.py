@@ -30,6 +30,12 @@ def run_process_job():
     slack.post_job_finished_msg(formatted_date, 'Processed')
     logger.log_info("PollJob: Status changed to finished")
 
+def run_calculate_statistics_job():
+    logger.log_info("CalculateStatisticsJob: Status changed to started")
+    boxplot_one()
+    geometric_distribution_60()
+    logger.log_info("CalculateStatisticsJob: Status changed to finished")
+
 
 def get_all_extracted_delays():
     date = dbAccess.load_unprocessed_dates()
