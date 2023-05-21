@@ -111,7 +111,7 @@ def boxplot_one():
     plt.grid()
     plt.savefig('./flaskr/static/boxplot.png')
 
-
+@app.route('/stat.png')
 def geometric_distribution_60():
     delays = get_all_extracted_delays()
     total_delays = len(delays)
