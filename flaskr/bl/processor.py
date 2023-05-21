@@ -117,6 +117,10 @@ def geometric_distribution_60():
     unique_delays, counts = np.unique(delays, return_counts=True)
     prob = counts / total_delays
 
+    print("probabilities"+prob)
+
+    print("delays"+unique_delays)
+
     mask = unique_delays <= 30
     unique_delays = unique_delays[mask]
     prob = prob[mask]
