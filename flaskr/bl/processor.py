@@ -102,20 +102,15 @@ def process_data_point(key, dictionary, data_point, save_geopos):
 
 def geometric_distribution_60():
     delays = get_all_extracted_delays()
-    total_delays = len(delays)
-    unique_delays, counts = np.unique(delays, return_counts=True)
-    prob = counts / total_delays
 
-    mask = unique_delays <= 60
-    unique_delays = unique_delays[mask]
-    prob = prob[mask]
-
-    plt.plot(unique_delays, prob, marker='o', linestyle='-', markersize=4)
-    plt.title('Probability of unique Delays')
-    plt.xlabel('Delay (minutes)')
+    hist, bins = np.histogram(delays, bins=range(1, 32), density=True)
+    plt.bar(range(1, 31), hist, align='edge', width=1)
+    plt.xlabel('Delays')
     plt.ylabel('Probability')
-    plt.grid()
-    plt.xlim(0, 60)
+    plt.title('Delay Distribution')
+    plt.xlim(0, 31)
+    plt.ylim(0, 0.1)  # Adjust the y-axis limits as needed
+    plt.xticks(range(1, 31))
     plt.savefig('./flaskr/static/delaydistribution.png')
 
 
