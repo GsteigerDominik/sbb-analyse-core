@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timedelta
+from flask import app
 
 import matplotlib.pyplot as plt
 import numpy as np
