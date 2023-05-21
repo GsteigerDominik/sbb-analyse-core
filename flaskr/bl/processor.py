@@ -109,7 +109,7 @@ def geometric_distribution_60():
 
     mask = unique_delays <= 30
     unique_delays = unique_delays[mask]
-    prob = prob[mask]
+    prob = prob
 
     plt.stem(unique_delays, prob, use_line_collection=True)
     plt.title('Probability of unique Delays')
