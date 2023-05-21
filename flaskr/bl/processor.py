@@ -1,6 +1,5 @@
 import json
 from datetime import datetime, timedelta
-from flask import app
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -112,14 +111,13 @@ def boxplot_one():
     plt.grid()
     plt.savefig('./flaskr/static/boxplot.png')
 
-@app.route('/stat.png')
 def geometric_distribution_60():
     delays = get_all_extracted_delays()
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
     prob = counts / total_delays
 
-    mask = unique_delays <= 60
+    mask = unique_delays <= 30
     unique_delays = unique_delays[mask]
     prob = prob[mask]
 
