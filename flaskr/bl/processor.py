@@ -106,16 +106,16 @@ def geometric_distribution_60():
     unique_delays, counts = np.unique(delays, return_counts=True)
     prob = counts / total_delays
 
-    mask = unique_delays <= 30
+    mask = unique_delays <= 60
     unique_delays = unique_delays[mask]
     prob = prob[mask]
 
-    plt.plot(unique_delays, prob)
+    plt.plot(unique_delays, prob, marker='o', linestyle='-', markersize=4)
     plt.title('Probability of unique Delays')
     plt.xlabel('Delay (minutes)')
     plt.ylabel('Probability')
     plt.grid()
-    plt.xlim(0, 30)
+    plt.xlim(0, 60)
     plt.savefig('./flaskr/static/delaydistribution.png')
 
 
