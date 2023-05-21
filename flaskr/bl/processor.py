@@ -101,7 +101,7 @@ def process_data_point(key, dictionary, data_point, save_geopos):
     dictionary[key]['totaldatapoints'] += 1
 
 
-def geometric_distribution():
+def geometric_distribution_60():
     delays = get_all_extracted_delays()
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
