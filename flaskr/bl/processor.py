@@ -101,17 +101,7 @@ def process_data_point(key, dictionary, data_point, save_geopos):
     dictionary[key]['totaldatapoints'] += 1
 
 
-def boxplot_one():
-    data = get_all_extracted_delays()
-    plt.boxplot(data,showfliers=False)
-
-    plt.title('Boxplot of Delays')
-    plt.xlabel('Delay')
-    plt.ylabel('Minutes')
-    plt.grid()
-    plt.savefig('./flaskr/static/boxplot.png')
-
-def geometric_distribution_60():
+def geometric_distribution():
     delays = get_all_extracted_delays()
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
@@ -121,10 +111,20 @@ def geometric_distribution_60():
     unique_delays = unique_delays[mask]
     prob = prob[mask]
 
-    plt.plot(unique_delays, prob)
+    plt.stem(unique_delays, prob, use_line_collection=True)
     plt.title('Probability of unique Delays')
     plt.xlabel('Delay (minutes)')
     plt.ylabel('Probability')
-    plt.grid()
+    plt.xticks(range(len(unique_delays)), unique_delays)
     plt.xlim(0, 60)
     plt.savefig('./flaskr/static/delaydistribution.png')
+
+def boxplot_one():
+    data = get_all_extracted_delays()
+    plt.boxplot(data,showfliers=False)
+
+    plt.title('Boxplot of Delays')
+    plt.xlabel('Delay')
+    plt.ylabel('Minutes')
+    plt.grid()
+    plt.savefig('./flaskr/static/boxplot.png')
