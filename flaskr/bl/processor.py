@@ -127,5 +127,5 @@ def geometric_distribution_60():
     plt.xlabel('Delay (minutes)')
     plt.ylabel('Probability')
     plt.grid()
-    plt.xlim(0, 60)
+    plt.xlim(0, 30)
     plt.savefig('./flaskr/static/delaydistribution.png')
