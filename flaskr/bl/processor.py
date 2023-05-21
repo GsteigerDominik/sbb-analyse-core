@@ -121,7 +121,7 @@ def geometric_distribution_60():
     unique_delays = unique_delays[mask]
     prob = prob[mask]
 
-    plt.plot(unique_delays, prob, markerfmt='o', use_line_collection=False)
+    plt.plot(unique_delays, prob)
     plt.title('Probability of unique Delays')
     plt.xlabel('Delay (minutes)')
     plt.ylabel('Probability')
