@@ -10,6 +10,3 @@ from flaskr.api.route import *
 from flaskr.web.web import *
 from flaskr.bl.jobs import *
 from flaskr.bl import processor
-
-
-processor.run_calculate_statistics_job()
