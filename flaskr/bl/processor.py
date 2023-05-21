@@ -103,7 +103,7 @@ def process_data_point(key, dictionary, data_point, save_geopos):
 
 def boxplot_one():
     data = get_all_extracted_delays()
-    plt.boxplot(data)
+    plt.boxplot(data,showfliers=False)
 
     plt.title('Boxplot of Delays')
     plt.xlabel('Delay')
@@ -116,10 +116,6 @@ def geometric_distribution_60():
     total_delays = len(delays)
     unique_delays, counts = np.unique(delays, return_counts=True)
     prob = counts / total_delays
-
-    print("probabilities"+prob)
-
-    print("delays"+unique_delays)
 
     mask = unique_delays <= 30
     unique_delays = unique_delays[mask]
