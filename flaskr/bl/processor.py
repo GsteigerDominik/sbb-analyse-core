@@ -105,12 +105,12 @@ def geometric_distribution_60():
 
     hist, bins = np.histogram(delays, bins=range(1, 32), density=True)
     plt.bar(range(1, 31), hist, align='edge', width=1)
-    plt.xlabel('Delays')
+    plt.xlabel('Delay')
     plt.ylabel('Probability')
-    plt.title('Delay Distribution')
+    plt.title('Probability of unique Delays')
     plt.xlim(0, 31)
-    plt.ylim(0, 0.1)  # Adjust the y-axis limits as needed
-    plt.xticks(range(1, 31))
+    plt.ylim(0, 0.1)
+    plt.xticks(range(1, 31), range(1, 31))
     plt.savefig('./flaskr/static/delaydistribution.png')
 
 
